@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>As Sosial Media</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes floatLogo {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        @keyframes bannerPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+            50% { transform: scale(1.02); box-shadow: 0 0 25px rgba(236, 72, 153, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 0 15px rgba(168, 85, 247, 0.4); }
+        }
+        .floating-bg { animation: floatLogo 4s ease-in-out infinite; }
+        .promo-banner { animation: bannerPulse 3s ease-in-out infinite; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between select-none">
+
+    <!-- Splash / Giriş Ekranı -->
+    <div id="splashScreen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700">
+        <div class="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
+            <i class="fab fa-instagram text-6xl text-pink-500 absolute top-10 left-10 floating-bg"></i>
+            <i class="fab fa-tiktok text-6xl text-cyan-400 absolute bottom-20 right-10 floating-bg" style="animation-delay: 1s;"></i>
+            <i class="fas fa-gamepad text-6xl text-purple-400 absolute top-1/4 right-1/4 floating-bg" style="animation-delay: 0.5s;"></i>
+            <i class="fas fa-crosshairs text-6xl text-emerald-400 absolute bottom-1/3 left-1/5 floating-bg" style="animation-delay: 1.5s;"></i>
+        </div>
+        <div class="relative z-10 max-w-md">
+            <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-500 rounded-2xl mx-auto flex items-center justify-center shadow-lg shadow-pink-500/30 mb-6 animate-pulse">
+                <i class="fas fa-store text-3xl text-white"></i>
+            </div>
+            <h1 class="text-2xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                As sosial media, sosial media satışı tətbiqinə xoş gəldiniz.
+            </h1>
+            <p class="text-slate-400 text-sm mb-8">Ən sürətli və etibarlı xidmət platforması</p>
+            <button onclick="startApp()" class="w-full py-3 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-semibold shadow-lg shadow-purple-600/30 transition-all">
+                Başlayaq <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Auth Ekranı -->
+    <div id="authScreen" class="hidden fixed inset-0 bg-slate-900 z-40 flex items-center justify-center p-6">
+        <div class="bg-slate-800/80 backdrop-blur-md border border-slate-700 p-8 rounded-3xl w-full max-w-sm shadow-2xl">
+            <div id="authTabsHeader" class="flex justify-center mb-6 space-x-4 border-b border-slate-700 pb-3">
+                <button id="tabLoginBtn" onclick="switchAuthTab('login')" class="font-bold text-purple-400 pb-1 border-b-2 border-purple-400">Giriş</button>
+                <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="font-medium text-slate-400 pb-1">Qeydiyyat</button>
+            </div>
+
+            <!-- Giriş Formu -->
+            <div id="loginForm">
+                <div class="space-y-4">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">İstifadəçi adı</label>
+                        <input type="text" id="loginUser" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500" placeholder="İstifadəçi adınız">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Şifrə</label>
+                        <input type="password" id="loginPass" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500" placeholder="••••••••">
+                    </div>
+                    <button onclick="handleLogin()" class="w-full py-3 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-all shadow-lg shadow-purple-600/20">Daxil ol</button>
+                    <div class="text-center pt-2">
+                        <button onclick="switchAuthTab('forgot')" class="text-xs text-purple-400 hover:underline">Şifrəni unutmusunuz?</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Qeydiyyat Formu -->
+            <div id="registerForm" class="hidden">
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">İstifadəçi adı</label>
+                        <input type="text" id="regUser" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500" placeholder="Yeni ad">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">E-poçt</label>
+                        <input type="email" id="regEmail" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500" placeholder="mail@example.com">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Məxfi Söz (Şifrə bərpa üçün)</label>
+                        <input type="text" id="regSecret" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500" placeholder="Məxfi sözünüz">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Şifrə</label>
+                        <input type="password" id="regPass" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-purple-500" placeholder="••••••••">
+                    </div>
+                    <button onclick="handleRegister()" class="w-full py-3 bg-pink-600 hover:bg-pink-500 rounded-xl font-semibold transition-all shadow-lg shadow-pink-600/20">Qeydiyyatdan keç</button>
+                </div>
+            </div>
+
+            <!-- Şifrə bərpa -->
+            <div id="forgotForm" class="hidden">
+                <div class="space-y-4">
+                    <p class="text-xs text-slate-400">İstifadəçi adınızı və məxfi sözünüzü daxil edin.</p>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">İstifadəçi adı</label>
+                        <input type="text" id="forgotUser" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500" placeholder="İstifadəçi adınız">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Məxfi Söz</label>
+                        <input type="text" id="forgotSecret" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500" placeholder="Məxfi sözünüz">
+                    </div>
+                    <div>
+                        <label class="text-xs text-slate-400 block mb-1">Yeni Şifrə</label>
+                        <input type="password" id="forgotNewPass" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-500" placeholder="Yeni şifrə">
+                    </div>
+                    <button onclick="handleResetPassword()" class="w-full py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-semibold transition-all shadow-lg">Şifrəni Yenilə</button>
+                    <div class="text-center pt-2">
+                        <button onclick="switchAuthTab('login')" class="text-xs text-slate-400 hover:underline">Girişə qayıt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Əsas Tətbiq -->
+    <div id="mainApp" class="hidden flex-1 flex flex-col max-w-md mx-auto w-full pb-20">
+        <header class="p-4 flex items-center justify-between border-b border-slate-800 bg-slate-900/50 backdrop-blur sticky top-0 z-20">
+            <span class="font-bold text-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">As Sosial</span>
+            <div class="flex items-center space-x-2">
+                <div class="bg-slate-800 px-3 py-1.5 rounded-full text-xs border border-slate-700 flex items-center space-x-1.5">
+                    <span>Balans: <span id="userBalance" class="text-emerald-400 font-bold">10.00</span> AZN</span>
+                    <button onclick="openBalanceModal()" class="w-5 h-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-full flex items-center justify-center transition-all shadow"><i class="fas fa-plus text-[10px]"></i></button>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-sm p-1"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <main class="flex-1 p-4 overflow-y-auto space-y-4">
+            <!-- Ana Səhifə -->
+            <div id="pageHome" class="space-y-4">
+                <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 border border-purple-500/20 p-4 rounded-2xl flex items-center justify-between">
+                    <div>
+                        <h2 class="font-bold text-sm">Xoş gəldin, <span id="welcomeUsername" class="text-purple-400">İstifadəçi</span></h2>
+                        <div class="flex items-center space-x-2 mt-1">
+                            <span id="userLevelBadge" class="bg-purple-600/30 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">Level 1</span>
+                            <span class="text-xs text-slate-400" id="userTotalSpent">Xərcləndi: 0 AZN</span>
+                        </div>
+                    </div>
+                    <div id="adminNavBtn" class="hidden">
+                        <button onclick="openAdminPanel()" class="bg-purple-600 hover:bg-purple-500 text-xs px-3 py-2 rounded-xl font-medium shadow"><i class="fas fa-cog mr-1"></i> Admin</button>
+                    </div>
+                </div>
+
+                <div id="activePromoBanner" class="hidden promo-banner bg-gradient-to-r from-pink-600/30 via-purple-600/30 to-blue-600/30 border border-purple-500/40 p-4 rounded-2xl text-center space-y-1">
+                    <span class="bg-pink-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Özəl Etkinlik</span>
+                    <h3 id="bannerTitle" class="font-bold text-sm text-white">Xüsusi Kampaniya</h3>
+                    <p id="bannerDesc" class="text-xs text-slate-300">Endirimli qiymətlərdən yararlanın!</p>
+                </div>
+
+                <h3 class="font-semibold text-sm text-slate-300 pt-2">Populyar Məhsullar və Xidmətlər</h3>
+                <div id="productsGrid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- Sifarişlər -->
+            <div id="pageOrders" class="hidden space-y-4">
+                <h3 class="font-semibold text-sm text-slate-300">Sifariş tarixçəniz və statuslar</h3>
+                <div id="ordersList" class="space-y-2"></div>
+            </div>
+
+            <!-- Canlı Dəstək -->
+            <div id="pageSupport" class="hidden space-y-4">
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 text-center space-y-2">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-emerald-500 to-cyan-500 text-slate-950 rounded-full flex items-center justify-center mx-auto text-2xl font-bold shadow-lg"><i class="fas fa-headset"></i></div>
+                    <h3 class="font-bold text-base">Canlı Dəstək Mərkəzi</h3>
+                    <p class="text-xs text-slate-400">Suallarınız və ya problemləriniz üçün bizimlə əlaqə saxlayın.</p>
+                </div>
+                <div class="space-y-3">
+                    <a href="https://wa.me/994507393658" target="_blank" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center justify-between shadow">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center text-lg"><i class="fab fa-whatsapp"></i></div>
+                            <div><h4 class="font-semibold text-xs text-slate-200">WhatsApp Dəstək</h4><span class="text-[11px] text-slate-400">+994 50 739 36 58</span></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs text-slate-500"></i>
+                    </a>
+                    <a href="https://instagram.com/AzsosialMedia" target="_blank" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center justify-between shadow">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-pink-500/20 text-pink-400 rounded-xl flex items-center justify-center text-lg"><i class="fab fa-instagram"></i></div>
+                            <div><h4 class="font-semibold text-xs text-slate-200">Instagram Səhifəmiz</h4><span class="text-[11px] text-slate-400">@AzsosialMedia</span></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs text-slate-500"></i>
+                    </a>
+                    <a href="https://t.me/azsosialmedia" target="_blank" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl flex items-center justify-between shadow">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center text-lg"><i class="fab fa-telegram"></i></div>
+                            <div><h4 class="font-semibold text-xs text-slate-200">Telegram Kanal</h4><span class="text-[11px] text-slate-400">@azsosialmedia</span></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-xs text-slate-500"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profil (ID kodlu) -->
+            <div id="pageAccount" class="hidden space-y-4">
+                <div class="bg-gradient-to-tr from-purple-900/60 via-slate-800 to-pink-900/60 p-6 rounded-3xl border border-purple-500/30 text-center space-y-3 shadow-xl">
+                    <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-500 text-white rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold shadow-lg" id="accountInitial">A</div>
+                    <div>
+                        <h3 class="font-bold text-lg text-white" id="accountUsername">İstifadəçi</h3>
+                        <p class="text-xs text-purple-300 font-medium" id="accountEmail">mail@example.com</p>
+                        <span class="inline-block bg-slate-900/80 text-cyan-400 text-[11px] font-mono px-3 py-1 rounded-lg border border-cyan-500/30 mt-2" id="accountUserId">ID: AS-0000</span>
+                    </div>
+                    <div class="flex justify-center gap-2 pt-1">
+                        <span class="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs px-3 py-1 rounded-full font-semibold" id="accountRoleBadge">İstifadəçi</span>
+                        <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-xs px-3 py-1 rounded-full font-semibold" id="accountLevelBadge">Level 1</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 space-y-3">
+                    <h4 class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Statistika və Üstünlüklər</h4>
+                    <div class="space-y-2 text-xs text-slate-400">
+                        <div class="flex justify-between bg-slate-900/50 p-2.5 rounded-xl">
+                            <span>Mövcud Balans:</span>
+                            <span class="text-emerald-400 font-bold" id="accBalanceText">0.00 AZN</span>
+                        </div>
+                        <div class="flex justify-between bg-slate-900/50 p-2.5 rounded-xl">
+                            <span>Toplam Xərclənən:</span>
+                            <span class="text-purple-400 font-bold" id="accSpentText">0.00 AZN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-slate-900 border-t border-slate-800 flex justify-around py-2.5 px-2 z-30">
+            <button onclick="switchTab('home')" id="navHome" class="flex flex-col items-center text-purple-400 text-xs space-y-1"><i class="fas fa-home text-lg"></i><span>Ana səhifə</span></button>
+            <button onclick="switchTab('orders')" id="navOrders" class="flex flex-col items-center text-slate-400 text-xs space-y-1"><i class="fas fa-shopping-bag text-lg"></i><span>Sifarişlər</span></button>
+            <button onclick="switchTab('support')" id="navSupport" class="flex flex-col items-center text-slate-400 text-xs space-y-1"><i class="fas fa-headset text-lg"></i><span>Canlı dəstək</span></button>
+            <button onclick="switchTab('account')" id="navAccount" class="flex flex-col items-center text-slate-400 text-xs space-y-1"><i class="fas fa-user text-lg"></i><span>Hesabım</span></button>
+        </nav>
+    </div>
+
+    <!-- Modallar -->
+    <div id="orderModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-xs space-y-4 shadow-2xl overflow-y-auto max-h-[90vh]">
+            <div class="w-20 h-20 rounded-2xl overflow-hidden mx-auto bg-slate-900 border border-slate-700">
+                <img id="modalProductImg" src="" class="w-full h-full object-cover">
+            </div>
+            <h3 id="modalProductName" class="font-bold text-base text-center">Məhsul adı</h3>
+            <p id="modalProductDesc" class="text-xs text-slate-400 text-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50">Məhsul məlumatı...</p>
+            <p id="modalProductPriceInfo" class="text-center text-xs text-purple-400 font-semibold">Qiymət: 0 AZN</p>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">İstifadəçi Adı və ya ID</label>
+                    <input type="text" id="orderTargetId" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-purple-500" placeholder="Məs: user123">
+                </div>
+                <div>
+                    <label class="text-xs text-slate-400 block mb-1">Miqdar (Ədəd)</label>
+                    <input type="number" id="orderQuantity" value="1" min="1" oninput="calculateTotalCost()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="bg-slate-900/60 p-2.5 rounded-xl border border-slate-700/50 flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Yekun Məbləğ:</span>
+                    <span id="modalTotalCost" class="text-emerald-400 font-bold text-sm">0.00 AZN</span>
+                </div>
+            </div>
+            <div class="flex space-x-2 pt-2">
+                <button onclick="closeOrderModal()" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold">Ləğv et</button>
+                <button onclick="submitOrder()" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-500 rounded-xl text-xs font-semibold">Sifariş ver</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="balanceModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl p-6 w-full max-w-xs space-y-4 text-center shadow-2xl">
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-xl"><i class="fab fa-whatsapp"></i></div>
+            <h3 class="font-bold text-base">Balansı Artırmaq</h3>
+            <p class="text-xs text-slate-300">Balansınızı artırmaq üçün WhatsApp dəstək xəttimizlə əlaqə saxlayın.</p>
+            <a href="https://wa.me/994507393658?text=Salam,%20balansımı%20artırmaq%20istəyirəm." target="_blank" class="block w-full py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-xs font-semibold text-white shadow-lg">
+                WhatsApp ilə əlaqə <i class="fas fa-external-link-alt ml-1"></i>
+            </a>
+            <button onclick="closeBalanceModal()" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-xs font-semibold text-slate-300">Bağla</button>
+        </div>
+    </div>
+
+    <!-- Admin Panel (ID ilə axtarış dəstəkli) -->
+    <div id="adminModal" class="hidden fixed inset-0 bg-slate-950 z-50 flex flex-col">
+        <header class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
+            <h2 class="font-bold text-sm text-purple-400"><i class="fas fa-cog mr-2"></i> Admin Panel</h2>
+            <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-white text-sm"><i class="fas fa-times text-lg"></i></button>
+        </header>
+        <div class="flex-1 p-4 overflow-y-auto space-y-6 max-w-md mx-auto w-full">
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold text-xs text-slate-300 uppercase tracking-wider">İstifadəçilər İdarəsi</h3>
+                        <p class="text-[11px] text-slate-400">ID və ya Ad ilə axtarış</p>
+                    </div>
+                    <button onclick="toggleAdminUsersSection()" id="toggleUsersBtn" class="bg-purple-600 hover:bg-purple-500 text-white px-3 py-2 rounded-xl text-xs font-semibold shadow">Siyahını Aç</button>
+                </div>
+            </div>
+
+            <div id="adminUsersSection" class="hidden space-y-3 bg-slate-900/60 p-3 rounded-2xl border border-slate-800">
+                <input type="text" id="adminSearchInput" oninput="renderAdminData()" placeholder="ID (məs: AS-1048) və ya Ad ilə axtar..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-purple-500">
+                <div id="adminUsersList" class="space-y-2 max-h-60 overflow-y-auto"></div>
+            </div>
+
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h3 class="font-semibold text-xs text-slate-300 uppercase tracking-wider">Etkinlik / Banner Ayarla</h3>
+                <input type="text" id="admBannerTitle" placeholder="Banner Başlığı" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <input type="text" id="admBannerDesc" placeholder="Banner Açıqlaması" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <button onclick="adminSaveBanner()" class="w-full py-2 bg-pink-600 hover:bg-pink-500 rounded-xl text-xs font-semibold">Banneri Aktivləşdir</button>
+                <button onclick="adminClearBanner()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-xl text-xs font-semibold">Banneri Bağla</button>
+            </div>
+
+            <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 space-y-3">
+                <h3 class="font-semibold text-xs text-slate-300 uppercase tracking-wider">Yeni Məhsul Əlavə Et <span class="text-[10px] text-purple-400 font-normal">(500x500 px)</span></h3>
+                <input type="text" id="admProdName" placeholder="Məhsul adı" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <textarea id="admProdDesc" placeholder="Ətraflı məlumat..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs h-16 resize-none"></textarea>
+                <input type="number" id="admProdPrice" placeholder="Qiymət (AZN)" step="0.01" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <input type="number" id="admProdUnit" placeholder="Bölmə vahidi (Məs: 1000)" value="1000" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs">
+                <input type="text" id="admProdBadge" placeholder="Endirim nişanı (Məs: %50 Endirim!)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-red-400 font-semibold">
+                <div>
+                    <label class="text-[11px] text-slate-400 block mb-1">Şəkil Seç:</label>
+                    <input type="file" id="admProdImgFile" accept="image/*" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-400">
+                </div>
+                <button onclick="adminAddProduct()" class="w-full py-2 bg-purple-600 hover:bg-purple-500 rounded-xl text-xs font-semibold">Məhsulu Əlavə Et</button>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-semibold text-xs text-slate-300 uppercase tracking-wider">Gələn Sifarişlər</h3>
+                <div id="adminOrdersList" class="space-y-2"></div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="font-semibold text-xs text-slate-300 uppercase tracking-wider">Məhsul Siyahısı (Silmək)</h3>
+                <div id="adminProductsList" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVER ÜÇÜN MYSQL DATABASE SQL STRUKTURU -->
+    <!--
+    CREATE DATABASE IF NOT EXISTS as_sosial_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    USE as_sosial_db;
+
+    CREATE TABLE users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_uid VARCHAR(20) UNIQUE NOT NULL,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        pass VARCHAR(255) NOT NULL,
+        secret_word VARCHAR(100) NOT NULL,
+        balance DECIMAL(10,2) DEFAULT 10.00,
+        total_spent DECIMAL(10,2) DEFAULT 0.00,
+        user_level INT DEFAULT 1,
+        role VARCHAR(20) DEFAULT 'user',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE products (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        description TEXT,
+        price DECIMAL(10,2) NOT NULL,
+        unit INT DEFAULT 1,
+        badge VARCHAR(50),
+        image_url LONGTEXT
+    );
+
+    CREATE TABLE orders (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        product_name VARCHAR(100) NOT NULL,
+        target_id VARCHAR(100) NOT NULL,
+        quantity INT NOT NULL,
+        total_price VARCHAR(50) NOT NULL,
+        order_status VARCHAR(50) DEFAULT 'Hal-hazırda davam edir',
+        order_date VARCHAR(50) NOT NULL
+    );
+    -->
+
+    <script>
+        const defaultProducts = [
+            { id: 1, name: 'Pubg Mobil UC', desc: 'Sürətli və etibarlı UC yüklənməsi. 100% zəmanətli.', price: 10, unit: 1, badge: 'Xüsusi Təklif', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300' },
+            { id: 2, name: 'Free Fire Diamond', desc: 'Anında hesabınıza əlavə olunur.', price: 8, unit: 1, badge: '', img: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=300' },
+            { id: 3, name: 'Roblox Robux', desc: 'Yüksək miqdarda Robux paketləri.', price: 15, unit: 1000, badge: 'Super Endirim', img: 'https://images.unsplash.com/photo-1612287233202-b51a366167ea?w=300' },
+            { id: 4, name: 'Tik Tok Panel İzləyici', desc: 'Aktiv və real türk/azərbaycan izləyiciləri.', price: 2, unit: 1000, badge: 'Ən Çox Satan', img: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?w=300' }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('as_products')) || defaultProducts;
+        let users = JSON.parse(localStorage.getItem('as_users')) || [{uid: 'AS-0001', username: 'admin', email: 'admin@as.com', pass: 'admin', secret: 'admin', balance: 999, totalSpent: 0, level: 5, role: 'admin'}];
+        let orders = JSON.parse(localStorage.getItem('as_orders')) || [];
+        let bannerData = JSON.parse(localStorage.getItem('as_banner')) || null;
+        let currentUser = JSON.parse(localStorage.getItem('as_current_user')) || null;
+        let selectedProductForOrder = null;
+
+        window.onload = function() {
+            if (currentUser) {
+                let freshUser = users.find(x => x.username === currentUser.username);
+                if(freshUser) {
+                    currentUser = freshUser;
+                    localStorage.setItem('as_current_user', JSON.stringify(currentUser));
+                }
+                document.getElementById('splashScreen').style.display = 'none';
+                document.getElementById('authScreen').style.display = 'none';
+                document.getElementById('mainApp').classList.remove('hidden');
+                initApp();
+            }
+        };
+
+        function startApp() {
+            document.getElementById('splashScreen').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+                document.getElementById('authScreen').classList.remove('hidden');
+            }, 500);
+        }
+
+        function switchAuthTab(tab) {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('forgotForm').classList.add('hidden');
+            document.getElementById('authTabsHeader').style.display = 'flex';
+
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('tabLoginBtn').className = 'font-bold text-purple-400 pb-1 border-b-2 border-purple-400';
+                document.getElementById('tabRegisterBtn').className = 'font-medium text-slate-400 pb-1';
+            } else if (tab === 'register') {
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('tabRegisterBtn').className = 'font-bold text-pink-400 pb-1 border-b-2 border-pink-400';
+                document.getElementById('tabLoginBtn').className = 'font-medium text-slate-400 pb-1';
+            } else if (tab === 'forgot') {
+                document.getElementById('forgotForm').classList.remove('hidden');
+                document.getElementById('authTabsHeader').style.display = 'none';
+            }
+        }
+
+        function handleRegister() {
+            const u = document.getElementById('regUser').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const secret = document.getElementById('regSecret').value.trim();
+            const p = document.getElementById('regPass').value.trim();
+            if (!u || !email || !secret || !p) {
+                alert('Bütün xanaları doldurun.');
+                return;
+            }
+            if (users.find(x => x.username === u)) {
+                alert('Bu istifadəçi adı artıq mövcuddur.');
+                return;
+            }
+            const uniqueId = 'AS-' + Math.floor(1000 + Math.random() * 9000);
+            const newUser = { uid: uniqueId, username: u, email: email, secret: secret, pass: p, balance: 10, totalSpent: 0, level: 1, role: 'user' };
+            users.push(newUser);
+            localStorage.setItem('as_users', JSON.stringify(users));
+            alert('Qeydiyyat tamamlandı! ID kodunuz: ' + uniqueId);
+            switchAuthTab('login');
+        }
+
+        function handleLogin() {
+            const u = document.getElementById('loginUser').value.trim();
+            const p = document.getElementById('loginPass').value.trim();
+            const found = users.find(x => x.username === u && x.pass === p);
+            if (!found) {
+                alert('İstifadəçi adı və ya şifrə yanlışdır.');
+                return;
+            }
+            currentUser = found;
+            localStorage.setItem('as_current_user', JSON.stringify(currentUser));
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').classList.remove('hidden');
+            initApp();
+        }
+
+        function handleResetPassword() {
+            const u = document.getElementById('forgotUser').value.trim();
+            const secret = document.getElementById('forgotSecret').value.trim();
+            const newPass = document.getElementById('forgotNewPass').value.trim();
+
+            if (!u || !secret || !newPass) {
+                alert('Bütün xanaları doldurun.');
+                return;
+            }
+
+            let targetUser = users.find(x => x.username === u && x.secret === secret);
+            if (!targetUser) {
+                alert('Məlumatlar yanlışdır!');
+                return;
+            }
+
+            targetUser.pass = newPass;
+            localStorage.setItem('as_users', JSON.stringify(users));
+            alert('Şifrə yeniləndi!');
+            switchAuthTab('login');
+        }
+
+        function logout() {
+            localStorage.removeItem('as_current_user');
+            location.reload();
+        }
+
+        function initApp() {
+            if(!currentUser.uid) {
+                currentUser.uid = 'AS-' + Math.floor(1000 + Math.random() * 9000);
+                localStorage.setItem('as_current_user', JSON.stringify(currentUser));
+            }
+
+            document.getElementById('welcomeUsername').innerText = currentUser.username;
+            document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
+            document.getElementById('userTotalSpent').innerText = `Xərcləndi: ${(currentUser.totalSpent || 0).toFixed(2)} AZN`;
+            document.getElementById('userLevelBadge').innerText = `Level ${currentUser.level || 1}`;
+            
+            document.getElementById('accountUsername').innerText = currentUser.username;
+            document.getElementById('accountEmail').innerText = currentUser.email || 'qeydsiz@mail.com';
+            document.getElementById('accountUserId').innerText = `ID: ${currentUser.uid}`;
+            document.getElementById('accountInitial').innerText = currentUser.username.charAt(0).toUpperCase();
+            document.getElementById('accountRoleBadge').innerText = currentUser.role === 'admin' ? 'Admin' : 'İstifadəçi';
+            document.getElementById('accountLevelBadge').innerText = `Level ${currentUser.level || 1}`;
+            document.getElementById('accBalanceText').innerText = currentUser.balance.toFixed(2) + ' AZN';
+            document.getElementById('accSpentText').innerText = (currentUser.totalSpent || 0).toFixed(2) + ' AZN';
+            
+            if (currentUser.role === 'admin' || currentUser.username === 'admin') {
+                document.getElementById('adminNavBtn').classList.remove('hidden');
+            }
+
+            renderBanner();
+            renderProducts();
+            renderOrders();
+        }
+
+        function renderBanner() {
+            const banner = document.getElementById('activePromoBanner');
+            if (bannerData && bannerData.active) {
+                document.getElementById('bannerTitle').innerText = bannerData.title;
+                document.getElementById('bannerDesc').innerText = bannerData.desc;
+                banner.classList.remove('hidden');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        function switchTab(tab) {
+            document.getElementById('pageHome').classList.add('hidden');
+            document.getElementById('pageOrders').classList.add('hidden');
+            document.getElementById('pageSupport').classList.add('hidden');
+            document.getElementById('pageAccount').classList.add('hidden');
+
+            document.getElementById('navHome').className = 'flex flex-col items-center text-slate-400 text-xs space-y-1';
+            document.getElementById('navOrders').className = 'flex flex-col items-center text-slate-400 text-xs space-y-1';
+            document.getElementById('navSupport').className = 'flex flex-col items-center text-slate-400 text-xs space-y-1';
+            document.getElementById('navAccount').className = 'flex flex-col items-center text-slate-400 text-xs space-y-1';
+
+            if (tab === 'home') {
+                document.getElementById('pageHome').classList.remove('hidden');
+                document.getElementById('navHome').className = 'flex flex-col items-center text-purple-400 text-xs space-y-1';
+            } else if (tab === 'orders') {
+                document.getElementById('pageOrders').classList.remove('hidden');
+                document.getElementById('navOrders').className = 'flex flex-col items-center text-purple-400 text-xs space-y-1';
+                renderOrders();
+            } else if (tab === 'support') {
+                document.getElementById('pageSupport').classList.remove('hidden');
+                document.getElementById('navSupport').className = 'flex flex-col items-center text-purple-400 text-xs space-y-1';
+            } else if (tab === 'account') {
+                document.getElementById('pageAccount').classList.remove('hidden');
+                document.getElementById('navAccount').className = 'flex flex-col items-center text-purple-400 text-xs space-y-1';
+            }
+        }
+
+        function openBalanceModal() { document.getElementById('balanceModal').classList.remove('hidden'); }
+        function closeBalanceModal() { document.getElementById('balanceModal').classList.add('hidden'); }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                let unitText = p.unit > 1 ? ` / ${p.unit} ədəd` : '';
+                let badgeHtml = p.badge ? `<span class="bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded-md mt-1 inline-block">${p.badge}</span>` : '';
+                grid.innerHTML += `
+                    <div onclick="openOrderModal(${p.id})" class="bg-slate-800/80 border border-slate-700/60 rounded-2xl p-3 flex flex-col items-center text-center cursor-pointer hover:border-purple-500 transition-all shadow-lg">
+                        <div class="w-16 h-16 rounded-xl overflow-hidden mb-2 bg-slate-900 flex items-center justify-center">
+                            <img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover">
+                        </div>
+                        <h4 class="font-semibold text-xs text-slate-200 mb-0.5">${p.name}</h4>
+                        <span class="text-xs text-purple-400 font-bold">${p.price} AZN${unitText}</span>
+                        ${badgeHtml}
+                    </div>
+                `;
+            });
+        }
+
+        function openOrderModal(id) {
+            selectedProductForOrder = products.find(x => x.id === id);
+            if (!selectedProductForOrder) return;
+            document.getElementById('modalProductName').innerText = selectedProductForOrder.name;
+            document.getElementById('modalProductDesc').innerText = selectedProductForOrder.desc || 'Ətraflı məlumat yoxdur.';
+            document.getElementById('modalProductImg').src = selectedProductForOrder.img;
+            let unitText = selectedProductForOrder.unit > 1 ? ` (Hər ${selectedProductForOrder.unit} ədədə)` : '';
+            document.getElementById('modalProductPriceInfo').innerText = `Qiymət: ${selectedProductForOrder.price} AZN${unitText}`;
+            document.getElementById('orderQuantity').value = selectedProductForOrder.unit > 1 ? selectedProductForOrder.unit : 1;
+            document.getElementById('orderTargetId').value = '';
+            calculateTotalCost();
+            document.getElementById('orderModal').classList.remove('hidden');
+        }
+
+        function calculateTotalCost() {
+            if (!selectedProductForOrder) return;
+            const qty = parseInt(document.getElementById('orderQuantity').value) || 0;
+            let unit = selectedProductForOrder.unit || 1;
+            let singlePrice = parseFloat(selectedProductForOrder.price) || 0;
+            let total = (qty / unit) * singlePrice;
+            document.getElementById('modalTotalCost').innerText = total.toFixed(2) + ' AZN';
+        }
+
+        function closeOrderModal() { document.getElementById('orderModal').classList.add('hidden'); }
+
+        function submitOrder() {
+            const targetId = document.getElementById('orderTargetId').value.trim();
+            const qty = parseInt(document.getElementById('orderQuantity').value) || 0;
+            if (!targetId || qty <= 0) {
+                alert('ID və düzgün miqdar daxil edin.');
+                return;
+            }
+            let unit = selectedProductForOrder.unit || 1;
+            let singlePrice = parseFloat(selectedProductForOrder.price) || 0;
+            const totalCost = (qty / unit) * singlePrice;
+
+            if (currentUser.balance < totalCost) {
+                alert('Balansınız yoxdur.');
+                return;
+            }
+
+            currentUser.balance -= totalCost;
+            currentUser.totalSpent = (currentUser.totalSpent || 0) + totalCost;
+            currentUser.level = Math.floor(currentUser.totalSpent / 20) + 1;
+
+            document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
+            document.getElementById('userTotalSpent').innerText = `Xərcləndi: ${currentUser.totalSpent.toFixed(2)} AZN`;
+            document.getElementById('userLevelBadge').innerText = `Level ${currentUser.level}`;
+
+            let uIdx = users.findIndex(x => x.username === currentUser.username);
+            if(uIdx !== -1) {
+                users[uIdx] = currentUser;
+                localStorage.setItem('as_users', JSON.stringify(users));
+                localStorage.setItem('as_current_user', JSON.stringify(currentUser));
+            }
+
+            orders.push({
+                id: Date.now(),
+                username: currentUser.username,
+                email: currentUser.email || 'qeydsiz@mail.com',
+                product: selectedProductForOrder.name,
+                target: targetId,
+                quantity: qty,
+                total: totalCost.toFixed(2) + ' AZN',
+                status: 'Hal-hazırda davam edir',
+                date: new Date().toLocaleDateString()
+            });
+
+            localStorage.setItem('as_orders', JSON.stringify(orders));
+            closeOrderModal();
+            alert('Sifariş qəbul olundu!');
+            switchTab('orders');
+        }
+
+        function renderOrders() {
+            const list = document.getElementById('ordersList');
+            list.innerHTML = '';
+            const userOrders = currentUser.role === 'admin' ? orders : orders.filter(x => x.username === currentUser.username);
+            if (userOrders.length === 0) {
+                list.innerHTML = '<p class="text-xs text-slate-500 text-center py-6">Sifariş yoxdur.</p>';
+                return;
+            }
+            userOrders.slice().reverse().forEach(o => {
+                let statusColor = o.status === 'Tamamlandı' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+                list.innerHTML += `
+                    <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs space-y-1.5">
+                        <div class="flex justify-between font-semibold">
+                            <span class="text-purple-400">${o.product}</span>
+                            <span class="text-emerald-400">${o.total}</span>
+                        </div>
+                        <p class="text-slate-400">ID / Profil: ${o.target} (Say: ${o.quantity})</p>
+                        <div class="flex justify-between items-center pt-1 border-t border-slate-700/50">
+                            <span class="px-2 py-0.5 rounded-md border text-[10px] font-semibold ${statusColor}">${o.status}</span>
+                            <span class="text-[10px] text-slate-500">${o.date}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function openAdminPanel() { document.getElementById('adminModal').classList.remove('hidden'); renderAdminData(); }
+        function closeAdminPanel() { document.getElementById('adminModal').classList.add('hidden'); }
+        function toggleAdminUsersSection() {
+            const sec = document.getElementById('adminUsersSection');
+            const btn = document.getElementById('toggleUsersBtn');
+            sec.classList.toggle('hidden');
+            btn.innerText = sec.classList.contains('hidden') ? 'Siyahını Aç' : 'Siyahını Bağla';
+        }
+
+        function adminAddBalance(username) {
+            let amountStr = prompt(`Balansa əlavə olunacaq məbləğ (AZN):`, "10");
+            if(amountStr === null) return;
+            let amount = parseFloat(amountStr);
+            if(isNaN(amount)) return;
+            let targetUser = users.find(x => x.username === username);
+            if(targetUser) {
+                targetUser.balance += amount;
+                localStorage.setItem('as_users', JSON.stringify(users));
+                if(currentUser.username === username) {
+                    currentUser.balance = targetUser.balance;
+                    localStorage.setItem('as_current_user', JSON.stringify(currentUser));
+                    document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
+                }
+                renderAdminData();
+                alert('Balans artırıldı!');
+            }
+        }
+
+        function adminUpdateOrderStatus(orderId, newStatus) {
+            let ord = orders.find(x => x.id === orderId);
+            if(ord) {
+                ord.status = newStatus;
+                localStorage.setItem('as_orders', JSON.stringify(orders));
+                renderAdminData();
+                if(newStatus === 'Tamamlandı') {
+                    alert(`[AVTO-MAIL]: '${ord.email}' ünvanına məktub atıldı: Sifarişiniz tamamlandı!`);
+                    orders = orders.filter(x => x.id !== orderId);
+                    localStorage.setItem('as_orders', JSON.stringify(orders));
+                    renderAdminData();
+                }
+            }
+        }
+
+        function adminSaveBanner() {
+            const title = document.getElementById('admBannerTitle').value.trim();
+            const desc = document.getElementById('admBannerDesc').value.trim();
+            if (!title) return;
+            bannerData = { active: true, title, desc };
+            localStorage.setItem('as_banner', JSON.stringify(bannerData));
+            renderBanner();
+            alert('Banner aktivdir!');
+        }
+
+        function adminClearBanner() {
+            bannerData = { active: false };
+            localStorage.setItem('as_banner', JSON.stringify(bannerData));
+            renderBanner();
+            alert('Banner bağlandı.');
+        }
+
+        function adminAddProduct() {
+            const name = document.getElementById('admProdName').value.trim();
+            const desc = document.getElementById('admProdDesc').value.trim();
+            const price = parseFloat(document.getElementById('admProdPrice').value);
+            const unit = parseInt(document.getElementById('admProdUnit').value) || 1;
+            const badge = document.getElementById('admProdBadge').value.trim();
+            const fileInput = document.getElementById('admProdImgFile');
+
+            if (!name || isNaN(price)) return;
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) { saveNewProduct(name, desc, price, unit, badge, e.target.result); };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                saveNewProduct(name, desc, price, unit, badge, 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300');
+            }
+        }
+
+        function saveNewProduct(name, desc, price, unit, badge, img) {
+            products.push({ id: Date.now(), name, desc, price, unit, badge, img });
+            localStorage.setItem('as_products', JSON.stringify(products));
+            renderProducts();
+            renderAdminData();
+            alert('Məhsul əlavə olundu!');
+        }
+
+        function adminDeleteProduct(id) {
+            products = products.filter(x => x.id !== id);
+            localStorage.setItem('as_products', JSON.stringify(products));
+            renderProducts();
+            renderAdminData();
+        }
+
+        function renderAdminData() {
+            const searchVal = document.getElementById('adminSearchInput') ? document.getElementById('adminSearchInput').value.toLowerCase() : '';
+            const usrList = document.getElementById('adminUsersList');
+            usrList.innerHTML = '';
+            
+            let filteredUsers = users.filter(u => 
+                (u.username && u.username.toLowerCase().includes(searchVal)) || 
+                (u.uid && u.uid.toLowerCase().includes(searchVal))
+            );
+
+            if(filteredUsers.length === 0) {
+                usrList.innerHTML = '<p class="text-xs text-slate-500 text-center py-2">İstifadəçi tapılmadı.</p>';
+            }
+
+            filteredUsers.forEach(u => {
+                usrList.innerHTML += `
+                    <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 text-xs space-y-1">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-slate-200">${u.username} <span class="text-cyan-400 font-mono">(${u.uid || 'AS-XXXX'})</span></span>
+                            <span class="text-emerald-400 font-bold">${u.balance.toFixed(2)} AZN</span>
+                        </div>
+                        <div class="text-slate-400 text-[11px]">Mail: ${u.email} | Şifrə: ${u.pass}</div>
+                        <button onclick="adminAddBalance('${u.username}')" class="w-full py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-semibold mt-1">Balans Artır</button>
+                    </div>
+                `;
+            });
+
+            const ordList = document.getElementById('adminOrdersList');
+            ordList.innerHTML = '';
+            if (orders.length === 0) {
+                ordList.innerHTML = '<p class="text-xs text-slate-500">Aktiv sifariş yoxdur.</p>';
+            } else {
+                orders.slice().reverse().forEach(o => {
+                    ordList.innerHTML += `
+                        <div class="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs space-y-2">
+                            <div class="flex justify-between font-bold text-slate-200">
+                                <span>${o.product} (${o.total})</span>
+                                <span class="text-purple-400">${o.username}</span>
+                            </div>
+                            <div class="text-slate-400">ID: ${o.target} | Say: ${o.quantity}</div>
+                            <div class="flex space-x-2 pt-1 border-t border-slate-700/50">
+                                <button onclick="adminUpdateOrderStatus(${o.id}, 'Hal-hazırda davam edir')" class="flex-1 py-1 bg-amber-600/30 text-amber-300 rounded-lg">Davam edir</button>
+                                <button onclick="adminUpdateOrderStatus(${o.id}, 'Tamamlandı')" class="flex-1 py-1 bg-emerald-600 text-white rounded-lg">Tamamlandı</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const prodList = document.getElementById('adminProductsList');
+            prodList.innerHTML = '';
+            products.forEach(p => {
+                prodList.innerHTML += `
+                    <div class="bg-slate-800 p-2.5 rounded-xl border border-slate-700 flex items-center justify-between text-xs">
+                        <div class="flex items-center space-x-2">
+                            <img src="${p.img}" class="w-8 h-8 rounded-lg object-cover">
+                            <span class="font-semibold text-slate-200">${p.name} - ${p.price} AZN</span>
+                        </div>
+                        <button onclick="adminDeleteProduct(${p.id})" class="bg-red-500/20 text-red-400 px-2.5 py-1 rounded-lg">Sil</button>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
