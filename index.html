@@ -24,7 +24,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between select-none">
 
-    <!-- Splash / Giriş Ekranı -->
+    <!-- Splash Ekranı -->
     <div id="splashScreen" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-700">
         <div class="absolute inset-0 overflow-hidden opacity-20 pointer-events-none">
             <i class="fab fa-instagram text-6xl text-pink-500 absolute top-10 left-10 floating-bg"></i>
@@ -54,7 +54,7 @@
                 <button id="tabRegisterBtn" onclick="switchAuthTab('register')" class="font-medium text-slate-400 pb-1">Qeydiyyat</button>
             </div>
 
-            <!-- Giriş Formu -->
+            <!-- Giriş -->
             <div id="loginForm">
                 <div class="space-y-4">
                     <div>
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <!-- Qeydiyyat Formu -->
+            <!-- Qeydiyyat -->
             <div id="registerForm" class="hidden">
                 <div class="space-y-3">
                     <div>
@@ -126,7 +126,7 @@
             <span class="font-bold text-lg bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">As Sosial</span>
             <div class="flex items-center space-x-2">
                 <div class="bg-slate-800 px-3 py-1.5 rounded-full text-xs border border-slate-700 flex items-center space-x-1.5">
-                    <span>Balans: <span id="userBalance" class="text-emerald-400 font-bold">10.00</span> AZN</span>
+                    <span>Balans: <span id="userBalance" class="text-emerald-400 font-bold">0.00</span> AZN</span>
                     <button onclick="openBalanceModal()" class="w-5 h-5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-full flex items-center justify-center transition-all shadow"><i class="fas fa-plus text-[10px]"></i></button>
                 </div>
                 <button onclick="logout()" class="text-slate-400 hover:text-red-400 text-sm p-1"><i class="fas fa-sign-out-alt"></i></button>
@@ -197,7 +197,7 @@
                 </div>
             </div>
 
-            <!-- Profil (ID kodlu) -->
+            <!-- Profil -->
             <div id="pageAccount" class="hidden space-y-4">
                 <div class="bg-gradient-to-tr from-purple-900/60 via-slate-800 to-pink-900/60 p-6 rounded-3xl border border-purple-500/30 text-center space-y-3 shadow-xl">
                     <div class="w-20 h-20 bg-gradient-to-tr from-purple-600 to-pink-500 text-white rounded-2xl flex items-center justify-center mx-auto text-3xl font-bold shadow-lg" id="accountInitial">A</div>
@@ -234,6 +234,17 @@
             <button onclick="switchTab('support')" id="navSupport" class="flex flex-col items-center text-slate-400 text-xs space-y-1"><i class="fas fa-headset text-lg"></i><span>Canlı dəstək</span></button>
             <button onclick="switchTab('account')" id="navAccount" class="flex flex-col items-center text-slate-400 text-xs space-y-1"><i class="fas fa-user text-lg"></i><span>Hesabım</span></button>
         </nav>
+    </div>
+
+    <!-- Xüsusi Səliqəli Modal Bildiriş (Sayt adı görünməyən alert əvəzi) -->
+    <div id="customAlertModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 w-full max-w-xs text-center space-y-4 shadow-2xl">
+            <div class="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <p id="customAlertText" class="text-xs text-slate-200 font-medium">Bildiriş mətni...</p>
+            <button onclick="closeCustomAlert()" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 rounded-xl text-xs font-semibold text-white shadow">Oldu</button>
+        </div>
     </div>
 
     <!-- Modallar -->
@@ -278,7 +289,7 @@
         </div>
     </div>
 
-    <!-- Admin Panel (ID ilə axtarış dəstəkli) -->
+    <!-- Admin Panel -->
     <div id="adminModal" class="hidden fixed inset-0 bg-slate-950 z-50 flex flex-col">
         <header class="p-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
             <h2 class="font-bold text-sm text-purple-400"><i class="fas fa-cog mr-2"></i> Admin Panel</h2>
@@ -334,7 +345,7 @@
         </div>
     </div>
 
-    <!-- SERVER ÜÇÜN MYSQL DATABASE SQL STRUKTURU -->
+    <!-- SQL / Verilənlər Bazası Struktur Qeydi (Serverə keçid üçün) -->
     <!--
     CREATE DATABASE IF NOT EXISTS as_sosial_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
     USE as_sosial_db;
@@ -346,7 +357,7 @@
         email VARCHAR(100) NOT NULL,
         pass VARCHAR(255) NOT NULL,
         secret_word VARCHAR(100) NOT NULL,
-        balance DECIMAL(10,2) DEFAULT 10.00,
+        balance DECIMAL(10,2) DEFAULT 0.00,
         total_spent DECIMAL(10,2) DEFAULT 0.00,
         user_level INT DEFAULT 1,
         role VARCHAR(20) DEFAULT 'user',
@@ -377,6 +388,15 @@
     -->
 
     <script>
+        function showToast(message) {
+            document.getElementById('customAlertText').innerText = message;
+            document.getElementById('customAlertModal').classList.remove('hidden');
+        }
+
+        function closeCustomAlert() {
+            document.getElementById('customAlertModal').classList.add('hidden');
+        }
+
         const defaultProducts = [
             { id: 1, name: 'Pubg Mobil UC', desc: 'Sürətli və etibarlı UC yüklənməsi. 100% zəmanətli.', price: 10, unit: 1, badge: 'Xüsusi Təklif', img: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=300' },
             { id: 2, name: 'Free Fire Diamond', desc: 'Anında hesabınıza əlavə olunur.', price: 8, unit: 1, badge: '', img: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=300' },
@@ -385,7 +405,12 @@
         ];
 
         let products = JSON.parse(localStorage.getItem('as_products')) || defaultProducts;
-        let users = JSON.parse(localStorage.getItem('as_users')) || [{uid: 'AS-0001', username: 'admin', email: 'admin@as.com', pass: 'admin', secret: 'admin', balance: 999, totalSpent: 0, level: 5, role: 'admin'}];
+        
+        // Bütün istifadəçi balansları sıfırlandı, yalnız qorunan admin hesabı qaldı
+        let users = JSON.parse(localStorage.getItem('as_users')) || [
+            { uid: 'AS-0001', username: 'admin', email: 'admin@as.com', pass: 'AsSosialAdmin2026_Secure!', secret: 'masterkey', balance: 0.00, totalSpent: 0, level: 5, role: 'admin' }
+        ];
+        
         let orders = JSON.parse(localStorage.getItem('as_orders')) || [];
         let bannerData = JSON.parse(localStorage.getItem('as_banner')) || null;
         let currentUser = JSON.parse(localStorage.getItem('as_current_user')) || null;
@@ -438,28 +463,35 @@
             const email = document.getElementById('regEmail').value.trim();
             const secret = document.getElementById('regSecret').value.trim();
             const p = document.getElementById('regPass').value.trim();
+            
             if (!u || !email || !secret || !p) {
-                alert('Bütün xanaları doldurun.');
+                showToast('Bütün xanaları düzgün doldurun.');
                 return;
             }
-            if (users.find(x => x.username === u)) {
-                alert('Bu istifadəçi adı artıq mövcuddur.');
+            if (users.find(x => x.username.toLowerCase() === u.toLowerCase())) {
+                showToast('Bu istifadəçi adı artıq mövcuddur.');
                 return;
             }
             const uniqueId = 'AS-' + Math.floor(1000 + Math.random() * 9000);
-            const newUser = { uid: uniqueId, username: u, email: email, secret: secret, pass: p, balance: 10, totalSpent: 0, level: 1, role: 'user' };
+            const newUser = { uid: uniqueId, username: u, email: email, secret: secret, pass: p, balance: 0.00, totalSpent: 0, level: 1, role: 'user' };
             users.push(newUser);
             localStorage.setItem('as_users', JSON.stringify(users));
-            alert('Qeydiyyat tamamlandı! ID kodunuz: ' + uniqueId);
+            showToast('Qeydiyyat tamamlandı! ID: ' + uniqueId);
             switchAuthTab('login');
         }
 
         function handleLogin() {
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
+            
+            if(!u || !p) {
+                showToast('Zəhmət olmasa məlumatları daxil edin.');
+                return;
+            }
+
             const found = users.find(x => x.username === u && x.pass === p);
             if (!found) {
-                alert('İstifadəçi adı və ya şifrə yanlışdır.');
+                showToast('İstifadəçi adı və ya şifrə yanlışdır.');
                 return;
             }
             currentUser = found;
@@ -475,19 +507,19 @@
             const newPass = document.getElementById('forgotNewPass').value.trim();
 
             if (!u || !secret || !newPass) {
-                alert('Bütün xanaları doldurun.');
+                showToast('Bütün xanaları doldurun.');
                 return;
             }
 
             let targetUser = users.find(x => x.username === u && x.secret === secret);
             if (!targetUser) {
-                alert('Məlumatlar yanlışdır!');
+                showToast('Məlumatlar yanlışdır!');
                 return;
             }
 
             targetUser.pass = newPass;
             localStorage.setItem('as_users', JSON.stringify(users));
-            alert('Şifrə yeniləndi!');
+            showToast('Şifrəniz uğurla yeniləndi!');
             switchAuthTab('login');
         }
 
@@ -614,7 +646,7 @@
             const targetId = document.getElementById('orderTargetId').value.trim();
             const qty = parseInt(document.getElementById('orderQuantity').value) || 0;
             if (!targetId || qty <= 0) {
-                alert('ID və düzgün miqdar daxil edin.');
+                showToast('ID və düzgün miqdar daxil edin.');
                 return;
             }
             let unit = selectedProductForOrder.unit || 1;
@@ -622,7 +654,7 @@
             const totalCost = (qty / unit) * singlePrice;
 
             if (currentUser.balance < totalCost) {
-                alert('Balansınız yoxdur.');
+                showToast('Balansınız kifayət etmir.');
                 return;
             }
 
@@ -655,7 +687,7 @@
 
             localStorage.setItem('as_orders', JSON.stringify(orders));
             closeOrderModal();
-            alert('Sifariş qəbul olundu!');
+            showToast('Sifariş qəbul olundu!');
             switchTab('orders');
         }
 
@@ -709,7 +741,7 @@
                     document.getElementById('userBalance').innerText = currentUser.balance.toFixed(2);
                 }
                 renderAdminData();
-                alert('Balans artırıldı!');
+                showToast('Balans artırıldı!');
             }
         }
 
@@ -720,7 +752,7 @@
                 localStorage.setItem('as_orders', JSON.stringify(orders));
                 renderAdminData();
                 if(newStatus === 'Tamamlandı') {
-                    alert(`[AVTO-MAIL]: '${ord.email}' ünvanına məktub atıldı: Sifarişiniz tamamlandı!`);
+                    showToast(`Sifariş tamamlandı və istifadəçiyə bildiriş göndərildi.`);
                     orders = orders.filter(x => x.id !== orderId);
                     localStorage.setItem('as_orders', JSON.stringify(orders));
                     renderAdminData();
@@ -735,14 +767,14 @@
             bannerData = { active: true, title, desc };
             localStorage.setItem('as_banner', JSON.stringify(bannerData));
             renderBanner();
-            alert('Banner aktivdir!');
+            showToast('Banner aktivdir!');
         }
 
         function adminClearBanner() {
             bannerData = { active: false };
             localStorage.setItem('as_banner', JSON.stringify(bannerData));
             renderBanner();
-            alert('Banner bağlandı.');
+            showToast('Banner bağlandı.');
         }
 
         function adminAddProduct() {
@@ -768,7 +800,7 @@
             localStorage.setItem('as_products', JSON.stringify(products));
             renderProducts();
             renderAdminData();
-            alert('Məhsul əlavə olundu!');
+            showToast('Məhsul əlavə olundu!');
         }
 
         function adminDeleteProduct(id) {
